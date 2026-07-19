@@ -1,0 +1,16 @@
+{
+  "Jeremy": {
+    "name": "Jeremy",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "Jeremy2": {
+    "name": "Jeremy2",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  }
+}
