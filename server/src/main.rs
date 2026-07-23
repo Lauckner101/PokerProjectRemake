@@ -253,7 +253,7 @@ impl GameSession {
 
 // Update the handle_client function
 fn handle_client(mut stream: TcpStream, game_rooms: Arc<GameRooms>) {
-    let mut buffer = [0; 1024];
+    let mut buffer = [0; 4096];
     let conn = init_db().expect("Failed to initialize DB");
 
     // Set non-blocking or add timeout if desired
@@ -270,7 +270,7 @@ fn handle_client(mut stream: TcpStream, game_rooms: Arc<GameRooms>) {
                 let msg = String::from_utf8_lossy(&buffer[..bytes_read]);
                 if let Ok(json_msg) = serde_json::from_str::<serde_json::Value>(&msg) {
                     let action = json_msg.get("action").and_then(|a| a.as_str());
-                    println!("Received action: {:?}", action);
+                    //println!("Received action: {:?}", action);
                     let username = json_msg
                         .get("username")
                         .and_then(|u| u.as_str())
@@ -345,8 +345,9 @@ fn handle_client(mut stream: TcpStream, game_rooms: Arc<GameRooms>) {
                             if !session.all_players.contains_key(username) {
                                 let player = Player::new(username);
                                 session.all_players.insert(username.to_string(), player);
-                                session.active_players.insert(username.to_string());
                             }
+
+                            session.active_players.insert(username.to_string());
 
                             let player_list: Vec<String> =
                                 session.active_players.iter().cloned().collect();
@@ -450,6 +451,11 @@ fn handle_client(mut stream: TcpStream, game_rooms: Arc<GameRooms>) {
                 }
             }
             Err(e) => {
+                if e.kind() == std::io::ErrorKind::WouldBlock || e.kind() == std::io::ErrorKind::TimedOut {
+                    // read timed out because the client just hasn't sent anything yet —
+                    // not a disconnect, so keep the connection alive and loop back around
+                    continue;
+                }
                 eprintln!("Failed to read from client: {}", e);
                 break;
             }

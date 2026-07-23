@@ -1,82 +1,6 @@
 {
-  "net6": {
-    "name": "net6",
-    "winnings": 1400,
-    "is_active": true,
-    "current_bet": 700,
-    "game_statistics": [
-      {
-        "total_bets": 700,
-        "total_winnings": 1400
-      }
-    ]
-  },
-  "ner7": {
-    "name": "ner7",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "nerm8": {
-    "name": "nerm8",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "nermy8": {
-    "name": "nermy8",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 600,
-    "game_statistics": [
-      {
-        "total_bets": 600,
-        "total_winnings": 0
-      }
-    ]
-  },
-  "nerm1": {
-    "name": "nerm1",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 7000,
-    "game_statistics": [
-      {
-        "total_bets": 7000,
-        "total_winnings": 0
-      }
-    ]
-  },
-  "nerm9": {
-    "name": "nerm9",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "usr8": {
-    "name": "usr8",
-    "winnings": 140,
-    "is_active": true,
-    "current_bet": 70,
-    "game_statistics": [
-      {
-        "total_bets": 70,
-        "total_winnings": 140
-      }
-    ]
-  },
-  "net2": {
-    "name": "net2",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "iris": {
-    "name": "iris",
+  "Jeremy2": {
+    "name": "Jeremy2",
     "winnings": 0,
     "is_active": true,
     "current_bet": 0,
@@ -89,53 +13,41 @@
     "current_bet": 0,
     "game_statistics": []
   },
-  "usr1": {
-    "name": "usr1",
+  "nerm7": {
+    "name": "nerm7",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "ner8": {
+    "name": "ner8",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "usr12": {
+    "name": "usr12",
     "winnings": 0,
     "is_active": false,
-    "current_bet": 5,
+    "current_bet": 10,
     "game_statistics": [
       {
-        "total_bets": 5,
+        "total_bets": 10,
         "total_winnings": 0
       }
     ]
   },
-  "usr3": {
-    "name": "usr3",
-    "winnings": 5,
-    "is_active": true,
-    "current_bet": 5,
-    "game_statistics": [
-      {
-        "total_bets": 5,
-        "total_winnings": 5
-      }
-    ]
-  },
-  "Jeremy2": {
-    "name": "Jeremy2",
+  "nerm2": {
+    "name": "nerm2",
     "winnings": 0,
     "is_active": true,
     "current_bet": 0,
     "game_statistics": []
   },
-  "player9": {
-    "name": "player9",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "nerm6": {
-    "name": "nerm6",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "iristest3": {
-    "name": "iristest3",
+  "net2": {
+    "name": "net2",
     "winnings": 0,
     "is_active": true,
     "current_bet": 0,
@@ -153,12 +65,38 @@
       }
     ]
   },
-  "nerm7": {
-    "name": "nerm7",
+  "nerm9": {
+    "name": "nerm9",
     "winnings": 0,
     "is_active": true,
     "current_bet": 0,
     "game_statistics": []
+  },
+  "nerm6": {
+    "name": "nerm6",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "j1": {
+    "name": "j1",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "jer1": {
+    "name": "jer1",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 500,
+    "game_statistics": [
+      {
+        "total_bets": 500,
+        "total_winnings": 0
+      }
+    ]
   },
   "nerm3": {
     "name": "nerm3",
@@ -184,108 +122,6 @@
       }
     ]
   },
-  "ner8": {
-    "name": "ner8",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "nerm4": {
-    "name": "nerm4",
-    "winnings": 3100,
-    "is_active": true,
-    "current_bet": 1500,
-    "game_statistics": [
-      {
-        "total_bets": 1500,
-        "total_winnings": 3100
-      }
-    ]
-  },
-  "usr12": {
-    "name": "usr12",
-    "winnings": 0,
-    "is_active": false,
-    "current_bet": 10,
-    "game_statistics": [
-      {
-        "total_bets": 10,
-        "total_winnings": 0
-      }
-    ]
-  },
-  "nerm2": {
-    "name": "nerm2",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "net1": {
-    "name": "net1",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "nerm5": {
-    "name": "nerm5",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 1600,
-    "game_statistics": [
-      {
-        "total_bets": 1600,
-        "total_winnings": 0
-      }
-    ]
-  },
-  "Jeremy": {
-    "name": "Jeremy",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "player10": {
-    "name": "player10",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
-  "nermy7": {
-    "name": "nermy7",
-    "winnings": 1200,
-    "is_active": true,
-    "current_bet": 600,
-    "game_statistics": [
-      {
-        "total_bets": 600,
-        "total_winnings": 1200
-      }
-    ]
-  },
-  "jer1": {
-    "name": "jer1",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 500,
-    "game_statistics": [
-      {
-        "total_bets": 500,
-        "total_winnings": 0
-      }
-    ]
-  },
-  "nerm": {
-    "name": "nerm",
-    "winnings": 0,
-    "is_active": true,
-    "current_bet": 0,
-    "game_statistics": []
-  },
   "usr13": {
     "name": "usr13",
     "winnings": 10,
@@ -310,8 +146,200 @@
       }
     ]
   },
+  "player9": {
+    "name": "player9",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "nerm8": {
+    "name": "nerm8",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "Jeremy": {
+    "name": "Jeremy",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "nermy8": {
+    "name": "nermy8",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 600,
+    "game_statistics": [
+      {
+        "total_bets": 600,
+        "total_winnings": 0
+      }
+    ]
+  },
+  "nerm5": {
+    "name": "nerm5",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 1600,
+    "game_statistics": [
+      {
+        "total_bets": 1600,
+        "total_winnings": 0
+      }
+    ]
+  },
+  "nerm1": {
+    "name": "nerm1",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 7000,
+    "game_statistics": [
+      {
+        "total_bets": 7000,
+        "total_winnings": 0
+      }
+    ]
+  },
+  "usr3": {
+    "name": "usr3",
+    "winnings": 5,
+    "is_active": true,
+    "current_bet": 5,
+    "game_statistics": [
+      {
+        "total_bets": 5,
+        "total_winnings": 5
+      }
+    ]
+  },
+  "iris": {
+    "name": "iris",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "usr1": {
+    "name": "usr1",
+    "winnings": 0,
+    "is_active": false,
+    "current_bet": 5,
+    "game_statistics": [
+      {
+        "total_bets": 5,
+        "total_winnings": 0
+      }
+    ]
+  },
+  "nerm": {
+    "name": "nerm",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "net6": {
+    "name": "net6",
+    "winnings": 1400,
+    "is_active": true,
+    "current_bet": 700,
+    "game_statistics": [
+      {
+        "total_bets": 700,
+        "total_winnings": 1400
+      }
+    ]
+  },
+  "nermy7": {
+    "name": "nermy7",
+    "winnings": 1200,
+    "is_active": true,
+    "current_bet": 600,
+    "game_statistics": [
+      {
+        "total_bets": 600,
+        "total_winnings": 1200
+      }
+    ]
+  },
+  "j2": {
+    "name": "j2",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "ner7": {
+    "name": "ner7",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "usr8": {
+    "name": "usr8",
+    "winnings": 140,
+    "is_active": true,
+    "current_bet": 70,
+    "game_statistics": [
+      {
+        "total_bets": 70,
+        "total_winnings": 140
+      }
+    ]
+  },
   "Jeremy1": {
     "name": "Jeremy1",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "yessir": {
+    "name": "yessir",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "iristest3": {
+    "name": "iristest3",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "nerm4": {
+    "name": "nerm4",
+    "winnings": 3100,
+    "is_active": true,
+    "current_bet": 1500,
+    "game_statistics": [
+      {
+        "total_bets": 1500,
+        "total_winnings": 3100
+      }
+    ]
+  },
+  "happys": {
+    "name": "happys",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "player10": {
+    "name": "player10",
+    "winnings": 0,
+    "is_active": true,
+    "current_bet": 0,
+    "game_statistics": []
+  },
+  "net1": {
+    "name": "net1",
     "winnings": 0,
     "is_active": true,
     "current_bet": 0,

@@ -307,6 +307,14 @@ impl ConnectionManager {
         false
     }
 
+    pub fn should_poll(&mut self) -> bool {
+        if self.last_poll_time.elapsed() >= self.poll_interval {
+            self.last_poll_time = Instant::now();
+            true
+        } else {
+            false
+        }
+    }
 
     pub fn fetch_game_state_update(
         &mut self,
@@ -337,14 +345,32 @@ impl ConnectionManager {
 
             while start_time.elapsed().as_millis() < 500 {
                 match stream.read(&mut buffer) {
+
                     Ok(size) if size > 0 => {
                         let response = String::from_utf8_lossy(&buffer[..size]);
-                        match from_str::<GameStateUpdate>(&response) {
-                            Ok(update) => return Some(update),
-                            Err(e) => {
-                                eprintln!("Failed to parse GameStateUpdate: {}", e);
-                                eprintln!("Raw response: {}", response);
-                                return None;
+
+                        // Find the start of a valid JSON object
+                        if let Some(start) = response.find('{') {
+                            let json_str = &response[start..];
+
+                            // Find the last complete JSON object in case multiple are concatenated
+                            if let Some(_end) = json_str.rfind('}') {
+                                if let Some(last_start) = json_str.rfind("{\"players\"") {
+                                    let candidate = &json_str[last_start..];
+
+                                    // Find the closing brace of this last object
+                                    if let Some(last_end) = candidate.rfind('}') {
+                                        let clean_json = &candidate[..=last_end];
+                                        match from_str::<GameStateUpdate>(clean_json) {
+                                            Ok(update) => return Some(update),
+                                            Err(e) => {
+                                                eprintln!("Failed to parse GameStateUpdate: {}", e);
+                                                eprintln!("Attempted to parse: {}", clean_json);
+                                                return None;
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }

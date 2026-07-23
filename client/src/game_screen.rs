@@ -235,7 +235,14 @@ pub async fn game_screen(game_state: &mut GameState) {
         let state_text = if game_started {
             // poll for game state updates
             if let Some(username) = game_state.username.as_deref() {
-                connection.get_game_state(game_variant.as_str(), username); // Mutable borrow is now safe
+                if connection.should_poll() {
+                    if let Some(updated_game) = connection.fetch_game_state_update(game_variant.as_str(), username) {
+                        game = updated_game;
+                    }
+                }
+
+
+
             } else {
                 eprintln!("Error: Username is not set in game_state.");
                 return;
@@ -286,11 +293,6 @@ pub async fn game_screen(game_state: &mut GameState) {
             let y_pos = 220.0;
             draw_texture(&background_texture, x_pos, y_pos, WHITE);
 
-
-            if let Some(updated_game) = connection.fetch_game_state_update(game_variant.as_str(), username) {
-                game = updated_game; // Overwrite with new data
-                println!("got update");
-            }
 
             display_game_state(
                 &game,

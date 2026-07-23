@@ -10,7 +10,7 @@ use itertools::Itertools;
 use serde::Serialize;
 use serde::Deserialize;
 use serde_json::Value;
-use std::io::{self, BufRead, BufReader, Write};
+use std::io::{self, BufRead, BufReader, Write, Read};
 use std::net::TcpStream;
 use std::{
     io::ErrorKind,
@@ -185,18 +185,6 @@ impl TexasHoldEm {
         println!("4. [bet_amount] - Enter an amount to raise the bet.");
         println!("5. 'skip' - Skip this betting round entirely.");
         println!();
-    
-        // Prompt for skip
-        print!("Type 'skip' to skip this round or press Enter to continue: ");
-        io::stdout().flush().unwrap();
-        let mut input = String::new();
-        io::stdin().read_line(&mut input).unwrap();
-        if input.trim().eq_ignore_ascii_case("skip") {
-            self.skip = true;
-            println!("Skipping the {} round.", phase);
-            return;
-        }
-  
 
 
         loop {
@@ -253,7 +241,8 @@ impl TexasHoldEm {
                 println!();
             
                 let mut valid_action = false;
-            
+                
+                /*
                 while !valid_action {
                     print!("{}'s action: ", player.name);
                     io::stdout().flush().unwrap();
@@ -306,6 +295,99 @@ impl TexasHoldEm {
                         }
                     }
                 }
+                */
+
+                // Save name before taking mutable borrow
+                let current_player_name = self.players[i].name.clone();
+
+                // find stream by index match on name
+                let player_stream = self.clients.iter().enumerate().find(|(idx, _)| {
+                    self.players.get(*idx).map(|p| p.name == current_player_name).unwrap_or(false)
+                });
+
+                let player = &mut self.players[i];
+
+                if let Some((_, stream_arc)) = player_stream {
+                    while !valid_action {
+                        // Wait for action from this specific client
+                        let mut buffer = [0; 1024];
+                        match stream_arc.lock() {
+                            Ok(mut stream) => {
+                                stream.set_read_timeout(Some(Duration::from_secs(60))).ok();
+                                match stream.read(&mut buffer) {
+                                    Ok(size) if size > 0 => {
+                                        let msg = String::from_utf8_lossy(&buffer[..size]);
+                                        if let Ok(json_msg) = serde_json::from_str::<serde_json::Value>(&msg) {
+                                            let action = json_msg
+                                                .get("player_action")
+                                                .and_then(|a| a.as_str())
+                                                .unwrap_or("")
+                                                .to_lowercase();
+                                            let amount = json_msg
+                                                .get("amount")
+                                                .and_then(|a| a.as_i64())
+                                                .map(|a| a as u32);
+
+                                            if action == "fold" {
+                                                player.fold();
+                                                println!("{} has folded.", player.name);
+                                                valid_action = true;
+                                            } else if action == "check" {
+                                                if player.current_bet == highest_bet {
+                                                    println!("{} checks.", player.name);
+                                                    valid_action = true;
+                                                } else {
+                                                    println!("Invalid check — must match highest bet.");
+                                                }
+                                            } else if action == "call" {
+                                                if player.current_bet < highest_bet {
+                                                    player.call(highest_bet);
+                                                    println!("{} calls.", player.name);
+                                                    valid_action = true;
+                                                } else {
+                                                    println!("Invalid call.");
+                                                }
+                                            } else if action == "bet" || action == "raise" {
+                                                if let Some(bet_amount) = amount {
+                                                    if bet_amount > highest_bet {
+                                                        player.bet(bet_amount);
+                                                        println!("{} raises to {}", player.name, bet_amount);
+                                                        highest_bet = bet_amount;
+                                                        valid_action = true;
+                                                    } else if bet_amount == highest_bet {
+                                                        player.bet(bet_amount);
+                                                        println!("{} calls.", player.name);
+                                                        valid_action = true;
+                                                    } else {
+                                                        println!("Bet too low.");
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                    Ok(_) => {}
+                                    Err(e) => {
+                                        eprintln!("Timed out waiting for action from {}: {}", player.name, e);
+                                        // Default to fold on timeout
+                                        player.fold();
+                                        valid_action = true;
+                                    }
+                                }
+                            }
+                            Err(_) => {
+                                player.fold();
+                                valid_action = true;
+                            }
+                        }
+                    }
+                } else {
+                    // No stream found for this player auto-fold
+                    player.fold();
+                    println!("{} auto-folded (no connection).", player.name);
+                }
+
+
+
             }
             // update pool
             self.bet_pool = self
@@ -449,28 +531,22 @@ impl TexasHoldEm {
         let message = serde_json::to_string(&update).expect("Failed to serialize GameStateUpdate");
         let message_with_newline = format!("{}\n", message);
     
-        let start_time = Instant::now();
-        let duration = Duration::from_secs(5);
-        let interval = Duration::from_millis(100); // ~10 updates over 5 seconds
-    
-        while start_time.elapsed() < duration {
-            self.clients.retain_mut(|stream_arc| {
-                match stream_arc.lock() {
-                    Ok(mut stream) => match stream.write_all(message_with_newline.as_bytes()) {
-                        Ok(_) => true,
-                        Err(e) => {
-                            eprintln!("Failed to send update to a client: {}", e);
-                            false
-                        }
-                    },
+
+        self.clients.retain_mut(|stream_arc| {
+            match stream_arc.lock() {
+                Ok(mut stream) => match stream.write_all(message_with_newline.as_bytes()) {
+                    Ok(_) => true,
                     Err(e) => {
-                        eprintln!("Failed to lock stream for writing: {}", e);
+                        eprintln!("Failed to send update to a client: {}", e);
                         false
                     }
+                },
+                Err(e) => {
+                    eprintln!("Failed to lock stream for writing: {}", e);
+                    false
                 }
-            });
-    
-            thread::sleep(interval);
-        }
+            }
+        });
+
     }
 }
