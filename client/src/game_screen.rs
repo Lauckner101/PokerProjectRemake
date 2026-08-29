@@ -8,8 +8,8 @@ use std::net::TcpStream;
 use crate::connection_manager::ConnectionManager;
 use crate::GameState;
 
-// Game state structures to deserialize server responses
-#[derive(Debug, Deserialize, Serialize)]
+
+#[derive(Debug, Deserialize, Serialize, Clone)]
 pub struct GameStateUpdate {
     players: Vec<PlayerState>,
     community_cards: Vec<String>,
@@ -20,7 +20,7 @@ pub struct GameStateUpdate {
     winner: Option<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
+#[derive(Debug, Deserialize, Serialize, Clone)]
 struct PlayerState {
     name: String,
     cards: Vec<String>,
@@ -28,7 +28,7 @@ struct PlayerState {
     current_bet: i32,
     folded: bool,
     is_active: bool,
-    face_up_index: Vec<usize>, // Stores indices of face-up cards
+    face_up_index: Vec<usize>,
 }
 
 // Structure to hold loaded card textures
@@ -75,17 +75,13 @@ impl CardTextures {
 
 #[derive(Debug, PartialEq)]
 pub enum GameVariant {
-    FiveCardDraw,
-    SevenCardStud,
-    TexasHoldEm,
+    TexasHoldEm
 }
 
 impl GameVariant {
     pub fn as_str(&self) -> &'static str {
         match self {
-            GameVariant::FiveCardDraw => "five_card_draw",
-            GameVariant::SevenCardStud => "seven_card_stud",
-            GameVariant::TexasHoldEm => "texas_holdem",
+            GameVariant::TexasHoldEm => "texas_holdem"
         }
     }
 }
@@ -117,33 +113,9 @@ async fn select_game_variant() -> GameVariant {
         let start_y = (screen_height - total_height) / 2.0;
         let start_x = screen_width / 2.0 - button_width / 2.0;
 
-        // Five Card Draw button
-        draw_rectangle(start_x, start_y, button_width, button_height, BLUE);
-        let text = "Five Card Draw";
-        let text_width = measure_text(text, None, 25, 1.0).width;
-        draw_text(
-            text,
-            screen_width / 2.0 - text_width / 2.0,
-            start_y + 35.0,
-            25.0,
-            WHITE,
-        );
-
-        // Seven Card Stud button
-        let seven_y = start_y + button_height + spacing;
-        draw_rectangle(start_x, seven_y, button_width, button_height, BLUE);
-        let text = "Seven Card Stud";
-        let text_width = measure_text(text, None, 25, 1.0).width;
-        draw_text(
-            text,
-            screen_width / 2.0 - text_width / 2.0,
-            seven_y + 35.0,
-            25.0,
-            WHITE,
-        );
-
+    
         // Texas Hold'em button
-        let texas_y = seven_y + button_height + spacing;
+        let texas_y = start_y + button_height + spacing;
         draw_rectangle(start_x, texas_y, button_width, button_height, BLUE);
         let text = "Texas Hold'em";
         let text_width = measure_text(text, None, 25, 1.0).width;
@@ -160,12 +132,6 @@ async fn select_game_variant() -> GameVariant {
             let (mouse_x, mouse_y) = mouse_position();
 
             if mouse_x >= start_x && mouse_x <= start_x + button_width {
-                if mouse_y >= start_y && mouse_y <= start_y + button_height {
-                    return GameVariant::FiveCardDraw;
-                }
-                if mouse_y >= seven_y && mouse_y <= seven_y + button_height {
-                    return GameVariant::SevenCardStud;
-                }
                 if mouse_y >= texas_y && mouse_y <= texas_y + button_height {
                     return GameVariant::TexasHoldEm;
                 }
@@ -221,8 +187,7 @@ pub async fn game_screen(game_state: &mut GameState) {
         let screen_height = screen_height();
 
         let variant_text = match game_variant {
-            GameVariant::FiveCardDraw => "Five-Card Draw",
-            GameVariant::SevenCardStud => "Seven-Card Stud",
+    
             GameVariant::TexasHoldEm => "Texas Hold 'Em",
         };
 
@@ -235,10 +200,13 @@ pub async fn game_screen(game_state: &mut GameState) {
         let state_text = if game_started {
             // poll for game state updates
             if let Some(username) = game_state.username.as_deref() {
+
+                if let Some(updated_game) = connection.get_latest_game_update() {
+                    game = updated_game;
+                }
+                // occasionally ask the server directly as a fallback 
                 if connection.should_poll() {
-                    if let Some(updated_game) = connection.fetch_game_state_update(game_variant.as_str(), username) {
-                        game = updated_game;
-                    }
+                    connection.request_game_state_update(game_variant.as_str(), username);
                 }
 
 
@@ -350,7 +318,7 @@ pub async fn game_screen(game_state: &mut GameState) {
 
             // Enter to confirm bet
             if is_key_pressed(KeyCode::Enter) {
-                connection.send_player_action(game_variant.as_str(), "bet", Some(bet_amount));
+                connection.send_player_action(game_variant.as_str(), username, "bet", Some(bet_amount));
                 show_bet_input = false;
                 bet_amount = 0;
             }
@@ -366,7 +334,7 @@ pub async fn game_screen(game_state: &mut GameState) {
     }
 }
 
-// New function to display the waiting room interface
+// function to display the waiting room interface
 fn display_waiting_room(
     players: Vec<String>,
     screen_width: f32,
@@ -661,6 +629,7 @@ fn display_game_state(
             600.0,
             connection,
             game_variant,
+            current_player_name,
             game_state.current_bet,
             bet_amount,
             show_bet_input,
@@ -679,6 +648,7 @@ fn display_action_buttons(
     y_position: f32,
     connection: &mut ConnectionManager,
     game_variant: &GameVariant,
+    username: &str,
     current_bet: i32,
     bet_amount: &mut i32,
     show_bet_input: &mut bool,
@@ -737,7 +707,7 @@ fn display_action_buttons(
             && mouse_y >= y_position
             && mouse_y <= y_position + button_height
         {
-            connection.send_player_action(game_variant.as_str(), "fold", None);
+            connection.send_player_action(game_variant.as_str(), username, "fold", None);
         }
 
         // Check/Call button
@@ -748,6 +718,7 @@ fn display_action_buttons(
         {
             connection.send_player_action(
                 game_variant.as_str(),
+                username,
                 if current_bet > 0 { "call" } else { "check" },
                 None,
             );
